@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "673605600370",
+    "project_id": "nihongostudyapp-681cb",
+    "storage_bucket": "nihongostudyapp-681cb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673605600370:android:1bddd2325a6b44f15d6eeb",
+        "android_client_info": {
+          "package_name": "com.example.nihongoflashcardapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXgfTinwmGD4cB3fs5gBCjmGbl3jjxb5A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
