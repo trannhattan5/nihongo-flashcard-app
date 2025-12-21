@@ -1,8 +1,10 @@
 package com.example.nihongoflashcardapp.repository
 
+import android.util.Log
 import com.example.nihongoflashcardapp.firebase.FirebaseService
 import com.example.nihongoflashcardapp.models.Flashcard
 import com.example.nihongoflashcardapp.models.UserProgress
+import kotlin.math.log
 
 class FlashcardRepository {
 
@@ -18,11 +20,31 @@ class FlashcardRepository {
             .whereEqualTo("lessonId", lessonId)
             .get()
             .addOnSuccessListener {
-                onSuccess(it.toObjects(Flashcard::class.java))
+                Log.d("FlashcardTest", "Query flashcards size = ${it.size()}")
+                it.documents.forEach { doc ->
+                    Log.d("FlashcardTest", "DocId=${doc.id}, data=${doc.data}")
+                }
+                val flashcards = it.documents.map { doc ->
+                    Flashcard(
+                        id = doc.id,
+                        lessonId = doc.getString("lessonId") ?: "",
+                        word = doc.getString("word") ?: "",
+                        reading = doc.getString("reading") ?: "",
+                        meaning = doc.getString("meaning") ?: "",
+                        example = doc.getString("example") ?: ""
+                    )
+                }
+                onSuccess(flashcards)
+
             }
             .addOnFailureListener {
-                onError(it.message ?: "Load flashcards failed")
+                 onError(it.message ?: "Load flashcards failed")
             }
+        Log.d(
+            "FlashcardFlow",
+            "Firestore projectId = ${FirebaseService.db.app.options.projectId}"
+        )
+
     }
 
     fun saveProgress(

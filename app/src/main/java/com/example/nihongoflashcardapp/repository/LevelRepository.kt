@@ -16,11 +16,21 @@ class LevelRepository {
             .orderBy("order")
             .get()
             .addOnSuccessListener { result ->
-                val levels = result.toObjects(Level::class.java)
+
+                val levels = result.documents.map { doc ->
+                    Level(
+                        id = doc.id, // ⭐ QUAN TRỌNG NHẤT
+                        name = doc.getString("name") ?: "",
+                        description = doc.getString("description") ?: "",
+                        order = doc.getLong("order")?.toInt() ?: 0
+                    )
+                }
+
                 onSuccess(levels)
             }
             .addOnFailureListener {
                 onError(it.message ?: "Load levels failed")
             }
     }
+
 }

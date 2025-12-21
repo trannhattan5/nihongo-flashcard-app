@@ -2,6 +2,7 @@ package com.example.nihongoflashcardapp.firebase
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 
 object FirebaseService {
 
@@ -11,5 +12,11 @@ object FirebaseService {
 
     val db: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
+//        FirebaseFirestore.getInstance().apply {
+//            firestoreSettings = FirebaseFirestoreSettings.Builder()
+//                .setPersistenceEnabled(true)
+//                .build()
+//        }
     }
+
 }

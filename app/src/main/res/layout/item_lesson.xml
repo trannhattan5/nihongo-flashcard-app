@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Biểu tượng bài học (Hình tròn màu nhạt) -->
+        <View
+            android:id="@+id/iconBg"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="@color/primary_light"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/txtIconText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="学"
+            android:textColor="@color/primary_color"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@id/iconBg"
+            app:layout_constraintEnd_toEndOf="@id/iconBg"
+            app:layout_constraintTop_toTopOf="@id/iconBg"
+            app:layout_constraintBottom_toBottomOf="@id/iconBg"/>
+
+        <!-- Nội dung chính -->
+        <TextView
+            android:id="@+id/txtLessonTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Lesson 01"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_main"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iconBg"
+            app:layout_constraintEnd_toStartOf="@id/btnStart"/>
+
+        <TextView
+            android:id="@+id/txtTotalCards"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="25 từ vựng"
+            android:textSize="14sp"
+            android:textColor="@color/text_sub"
+            app:layout_constraintTop_toBottomOf="@id/txtLessonTitle"
+            app:layout_constraintStart_toStartOf="@id/txtLessonTitle"
+            android:layout_marginTop="4dp"/>
+
+        <!-- Nút hình tròn mũi tên -->
+        <ImageView
+            android:id="@+id/btnStart"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_media_play"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txtLessonTitle"
+            app:tint="@color/primary_color" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
