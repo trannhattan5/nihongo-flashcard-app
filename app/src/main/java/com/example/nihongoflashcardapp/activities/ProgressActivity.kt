@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.nihongoflashcardapp.R
 import com.example.nihongoflashcardapp.databinding.ActivityProgressBinding
+import com.example.nihongoflashcardapp.navigation.BottomNavHelper
 import com.example.nihongoflashcardapp.repository.ProgressRepository
 
 class ProgressActivity : AppCompatActivity() {
@@ -18,6 +19,11 @@ class ProgressActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityProgressBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        BottomNavHelper.setup(
+            activity = this,
+            bottomNav = binding.bottomNavigation,
+            selectedItemId = binding.bottomNavigation.id
+        )
 
         repo.loadProgress { total, remembered, notRemembered ->
             binding.txtTotal.text = "Tổng số từ: $total"

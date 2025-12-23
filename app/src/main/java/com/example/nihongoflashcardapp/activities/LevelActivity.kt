@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nihongoflashcardapp.adapter.LevelAdapter
 import com.example.nihongoflashcardapp.databinding.ActivityLevelBinding
 import com.example.nihongoflashcardapp.firebase.FirebaseService
+import com.example.nihongoflashcardapp.navigation.BottomNavHelper
 import com.example.nihongoflashcardapp.repository.LevelRepository
 
 class LevelActivity : AppCompatActivity() {
@@ -19,6 +20,11 @@ class LevelActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLevelBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        BottomNavHelper.setup(
+            activity = this,
+            bottomNav = binding.bottomNavigation,
+            selectedItemId = binding.bottomNavigation.id
+        )
         FirebaseService.db.collection("lessons")
             .get()
             .addOnSuccessListener {

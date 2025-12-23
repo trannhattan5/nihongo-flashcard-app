@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_level"
+        android:title="Trang chủ"
+        android:icon="@drawable/ic_home"/>
+
+    <item
+        android:id="@+id/nav_review"
+        android:title="Ôn tập"
+        android:icon="@drawable/ic_review"/>
+
+    <item
+        android:id="@+id/nav_progress"
+        android:title="Tiến trình"
+        android:icon="@drawable/ic_chart"/>
+</menu>

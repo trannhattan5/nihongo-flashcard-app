@@ -68,5 +68,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // Navigation Component
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.0")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.0")
+
+    // Material (BottomNav)
+    implementation("com.google.android.material:material:1.12.0")
+
 
 }

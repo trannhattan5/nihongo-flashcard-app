@@ -26,6 +26,8 @@ class LessonActivity : AppCompatActivity() {
             Log.e("LessonTest", "LEVEL_ID is NULL")
             return
         }
+        binding.txtLevel.text = "Level $levelId"
+
 
         setupRecyclerView()
         loadLessons(levelId)
@@ -33,6 +35,7 @@ class LessonActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         binding.rvLessons.layoutManager = LinearLayoutManager(this)
+
     }
 
     private fun loadLessons(levelId: String) {
@@ -42,7 +45,7 @@ class LessonActivity : AppCompatActivity() {
                 binding.rvLessons.adapter = LessonAdapter(lessons) { lesson ->
                     openFlashcards(lesson.id)
                 }
-            },
+             },
             onError = {
                 // handle error (toast/log)
             }

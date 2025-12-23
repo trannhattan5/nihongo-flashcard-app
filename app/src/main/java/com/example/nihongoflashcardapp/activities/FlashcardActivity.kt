@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.nihongoflashcardapp.databinding.ActivityFlashcardBinding
 import com.example.nihongoflashcardapp.models.Flashcard
 import com.example.nihongoflashcardapp.repository.FlashcardRepository
+import com.example.nihongoflashcardapp.repository.ReviewRepository
 
 class FlashcardActivity : AppCompatActivity() {
 
@@ -19,6 +20,8 @@ class FlashcardActivity : AppCompatActivity() {
     private var flashcards: List<Flashcard> = emptyList()
     private var currentIndex = 0
     private var lessonId: String = ""
+    private var filterStatus: String? = null
+
 
     // trạng thái mặt thẻ
     private var isFront = true
@@ -31,6 +34,8 @@ class FlashcardActivity : AppCompatActivity() {
         initDataFromIntent()
         setupActions()
         loadFlashcards()
+        filterStatus = intent.getStringExtra("FILTER_STATUS")
+
     }
 
     /* ================= INIT ================= */
@@ -65,23 +70,37 @@ class FlashcardActivity : AppCompatActivity() {
             saveStatus("not_remembered")
             nextCard()
         }
+        binding.btnClose.setOnClickListener {
+            finish()
+        }
     }
 
     /* ================= LOAD DATA ================= */
 
     private fun loadFlashcards() {
-        repository.getFlashcards(
-            lessonId = lessonId,
-            onSuccess = { list ->
-                Log.d("FlashcardFlow", "Received flashcards = ${list.size}")
-                flashcards = list
-                currentIndex = 0
-                showCard()
-            },
-            onError = {
-                Log.e("FlashcardFlow", it)
-            }
-        )
+        if (filterStatus == null) {
+            // học bình thường
+            repository.getFlashcards(
+                lessonId,
+                onSuccess = {
+                    flashcards = it
+                    currentIndex = 0
+                    showCard()
+                },
+                onError = { }
+            )
+        } else {
+            // REVIEW MODE
+            ReviewRepository().getReviewFlashcards(
+                lessonId = lessonId,
+                status = filterStatus!!,
+                onSuccess = {
+                    flashcards = it
+                    currentIndex = 0
+                    showCard()
+                }
+            )
+        }
     }
 
     /* ================= SHOW CARD ================= */
