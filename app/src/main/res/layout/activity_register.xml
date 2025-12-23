@@ -16,6 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- EMAIL -->
         <EditText
             android:id="@+id/edtEmail"
             android:hint="Email"
@@ -23,28 +24,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <!-- PASSWORD -->
         <EditText
             android:id="@+id/edtPassword"
-            android:hint="Password"
+            android:hint="Mật khẩu"
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"/>
 
-        <Button
-            android:id="@+id/btnLogin"
-            android:text="Đăng nhập"
+        <!-- CONFIRM PASSWORD -->
+        <EditText
+            android:id="@+id/edtConfirmPassword"
+            android:hint="Nhập lại mật khẩu"
+            android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"/>
+            android:layout_marginTop="16dp"/>
 
-        <!-- NÚT ĐĂNG KÝ -->
+        <!-- BUTTON REGISTER -->
         <Button
             android:id="@+id/btnRegister"
             android:text="Đăng ký"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="24dp"/>
+
+        <!-- BACK TO LOGIN -->
+        <TextView
+            android:id="@+id/tvBackToLogin"
+            android:text="Đã có tài khoản? Đăng nhập"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"/>
 
     </LinearLayout>
 
