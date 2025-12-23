@@ -15,7 +15,7 @@ class LevelAdapter(
         : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(level: Level) {
-            binding.txtLevelName.text = level.name
+            binding.tvLevelSymbol.text = level.name
             binding.root.setOnClickListener {
                 onClick(level)
             }
