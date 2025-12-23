@@ -3,7 +3,6 @@ package com.example.nihongoflashcardapp.repository
 
 import com.example.nihongoflashcardapp.firebase.FirebaseService
 import com.example.nihongoflashcardapp.models.Flashcard
-
 class ReviewRepository {
 
     private val db = FirebaseService.db
@@ -23,9 +22,9 @@ class ReviewRepository {
             .get()
             .addOnSuccessListener { progressSnap ->
 
-                val cardIds = progressSnap.documents.mapNotNull {
-                    it.getString("cardId")
-                }
+                val cardIds = progressSnap.documents
+                    .mapNotNull { it.getString("cardId") }
+                    .filter { it.isNotBlank() }
 
                 if (cardIds.isEmpty()) {
                     onSuccess(emptyList())
@@ -33,7 +32,10 @@ class ReviewRepository {
                 }
 
                 db.collection("flashcards")
-                    .whereIn("__name__", cardIds)
+                    .whereIn(
+                        com.google.firebase.firestore.FieldPath.documentId(),
+                        cardIds
+                    )
                     .get()
                     .addOnSuccessListener { cardSnap ->
                         onSuccess(cardSnap.toObjects(Flashcard::class.java))

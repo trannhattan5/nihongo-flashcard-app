@@ -40,21 +40,42 @@ class LessonActivity : AppCompatActivity() {
 
     private fun loadLessons(levelId: String) {
         repository.getLessonsByLevel(
-            levelId = levelId,
+            levelId,
             onSuccess = { lessons ->
-                binding.rvLessons.adapter = LessonAdapter(lessons) { lesson ->
-                    openFlashcards(lesson.id)
-                }
-             },
-            onError = {
-                // handle error (toast/log)
-            }
+                binding.rvLessons.adapter = LessonAdapter(
+                    lessons,
+                    onLearn = { lesson ->
+                        openFlashcards(lesson.id)
+                    },
+                    onReview = { lesson ->
+                        openReview(lesson.id)
+                    }
+                )
+            },
+            onError = { }
         )
     }
 
+
+    private val REQUEST_LEARN = 1001
+
     private fun openFlashcards(lessonId: String) {
-        val intent = Intent(this, FlashcardActivity::class.java)
-        intent.putExtra("LESSON_ID", lessonId)
-        startActivity(intent)
+        startActivityForResult(
+            Intent(this, FlashcardActivity::class.java)
+                .putExtra("LESSON_ID", lessonId),
+            REQUEST_LEARN
+        )
     }
+
+
+    private fun openReview(lessonId: String) {
+        startActivity(
+            Intent(this, ReviewActivity::class.java)
+                .putExtra("LESSON_ID", lessonId)
+        )
+    }
+
+
+
+
 }

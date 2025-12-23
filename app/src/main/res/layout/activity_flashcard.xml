@@ -27,6 +27,50 @@
         app:layout_constraintTop_toBottomOf="@id/btnClose"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/txtProgressCounter" />
+    <!-- Progress Summary -->
+    <LinearLayout
+        android:id="@+id/layoutProgressSummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/progressStudy"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Remembered -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtRememberedCount"
+            android:text="✔ 0"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/success_green"
+            android:layout_marginEnd="16dp"/>
+
+        <!-- Not remembered -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtNotRememberedCount"
+            android:text="✖ 0"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/error_red"
+            android:layout_marginEnd="16dp"/>
+
+        <!-- Remaining -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtRemainingCount"
+            android:text="⏳ 35"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_sub"/>
+    </LinearLayout>
 
 
     <TextView

@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.nihongoflashcardapp.R
 import com.example.nihongoflashcardapp.databinding.ActivityReviewBinding
 import com.example.nihongoflashcardapp.navigation.BottomNavHelper
+import com.example.nihongoflashcardapp.repository.ReviewRepository
 
 class ReviewActivity : AppCompatActivity() {
 
@@ -20,32 +21,25 @@ class ReviewActivity : AppCompatActivity() {
         binding = ActivityReviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        BottomNavHelper.setup(
-            activity = this,
-            bottomNav = binding.bottomNavigation,
-            selectedItemId = binding.bottomNavigation.id
-        )
-        lessonId = intent.getStringExtra("LESSON_ID") ?: ""
-
-        if (lessonId.isBlank()) {
-            finish()
-            return
+        lessonId = intent.getStringExtra("LESSON_ID") ?: run {
+            finish(); return
         }
 
-        binding.btnReviewRemembered.setOnClickListener {
-            review("remembered")
+        binding.cardReviewRemembered.setOnClickListener {
+            openReview("remembered")
         }
 
-        binding.btnReviewNotRemembered.setOnClickListener {
-            review("not_remembered")
+        binding.cardReviewNotRemembered.setOnClickListener {
+            openReview("not_remembered")
         }
     }
 
-    private fun review(status: String) {
-        val intent = Intent(this, FlashcardActivity::class.java)
-        intent.putExtra("LESSON_ID", lessonId)
-        intent.putExtra("FILTER_STATUS", status)
-        startActivity(intent)
-        finish()
+    private fun openReview(status: String) {
+        startActivity(
+            Intent(this, FlashcardActivity::class.java)
+                .putExtra("LESSON_ID", lessonId)
+                .putExtra("FILTER_STATUS", status)
+        )
     }
 }
+

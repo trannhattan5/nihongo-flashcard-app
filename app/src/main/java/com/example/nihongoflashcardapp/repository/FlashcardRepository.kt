@@ -54,15 +54,62 @@ class FlashcardRepository {
     ) {
         val userId = auth.currentUser?.uid ?: return
 
-        val progress = UserProgress(
-            userId = userId,
-            lessonId = lessonId,
-            cardId = cardId,
-            status = status,
-            updatedAt = System.currentTimeMillis()
-        )
+        db.collection("user_progress")
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("lessonId", lessonId)
+            .whereEqualTo("cardId", cardId)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { snap ->
+                if (snap.isEmpty) {
+                    // CREATE
+                    db.collection("user_progress").add(
+                        hashMapOf(
+                            "userId" to userId,
+                            "lessonId" to lessonId,
+                            "cardId" to cardId,
+                            "status" to status,
+                            "updatedAt" to System.currentTimeMillis()
+                        )
+                    )
+                } else {
+                    // UPDATE
+                    snap.documents.first().reference.update(
+                        mapOf(
+                            "status" to status,
+                            "updatedAt" to System.currentTimeMillis()
+                        )
+                    )
+                }
+            }
+    }
+    fun loadLessonProgress(
+        lessonId: String,
+        totalCards: Int,
+        onResult: (
+            remembered: Int,
+            notRemembered: Int,
+            notLearned: Int
+        ) -> Unit
+    ) {
+        val userId = auth.currentUser?.uid ?: return
 
         db.collection("user_progress")
-            .add(progress)
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("lessonId", lessonId)
+            .get()
+            .addOnSuccessListener { snap ->
+                val remembered = snap.count {
+                    it.getString("status") == "remembered"
+                }
+                val notRemembered = snap.count {
+                    it.getString("status") == "not_remembered"
+                }
+                val notLearned = totalCards - (remembered + notRemembered)
+
+                onResult(remembered, notRemembered, notLearned)
+            }
     }
+
+
 }

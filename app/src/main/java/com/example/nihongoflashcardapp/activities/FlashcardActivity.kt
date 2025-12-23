@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.nihongoflashcardapp.databinding.ActivityFlashcardBinding
 import com.example.nihongoflashcardapp.models.Flashcard
 import com.example.nihongoflashcardapp.repository.FlashcardRepository
+import com.example.nihongoflashcardapp.repository.LessonProgressRepository
 import com.example.nihongoflashcardapp.repository.ReviewRepository
 
 class FlashcardActivity : AppCompatActivity() {
@@ -22,6 +23,8 @@ class FlashcardActivity : AppCompatActivity() {
     private var lessonId: String = ""
     private var filterStatus: String? = null
 
+    private var rememberedCount = 0
+    private var notRememberedCount = 0
 
     // trạng thái mặt thẻ
     private var isFront = true
@@ -41,16 +44,19 @@ class FlashcardActivity : AppCompatActivity() {
     /* ================= INIT ================= */
 
     private fun initDataFromIntent() {
+        filterStatus = intent.getStringExtra("FILTER_STATUS")
         lessonId = intent.getStringExtra("LESSON_ID") ?: ""
 
-        Log.d("FlashcardFlow", "FlashcardActivity started")
-        Log.d("FlashcardFlow", "LESSON_ID = '$lessonId'")
+        Log.d("FlashcardFlow", "FILTER_STATUS = $filterStatus")
+        Log.d("FlashcardFlow", "LESSON_ID = $lessonId")
 
-        if (lessonId.isBlank()) {
-            Log.e("FlashcardFlow", "LESSON_ID INVALID → FINISH")
+        // Chỉ yêu cầu lessonId khi KHÔNG phải review
+        if (filterStatus == null && lessonId.isBlank()) {
+            Log.e("FlashcardFlow", "LESSON_ID REQUIRED")
             finish()
         }
     }
+
 
     /* ================= UI EVENTS ================= */
 
@@ -62,11 +68,14 @@ class FlashcardActivity : AppCompatActivity() {
         }
 
         binding.btnRemembered.setOnClickListener {
+            rememberedCount++
             saveStatus("remembered")
             nextCard()
         }
 
         binding.btnNotRemembered.setOnClickListener {
+            notRememberedCount++
+
             saveStatus("not_remembered")
             nextCard()
         }
@@ -78,30 +87,30 @@ class FlashcardActivity : AppCompatActivity() {
     /* ================= LOAD DATA ================= */
 
     private fun loadFlashcards() {
-        if (filterStatus == null) {
-            // học bình thường
-            repository.getFlashcards(
-                lessonId,
-                onSuccess = {
-                    flashcards = it
-                    currentIndex = 0
+        repository.getFlashcards(
+            lessonId,
+            onSuccess = { cards ->
+                flashcards = cards
+
+                LessonProgressRepository().loadLessonProgress(
+                    lessonId = lessonId,
+                    totalCards = cards.size
+                ) { remembered, notRemembered, _ ->
+                    rememberedCount = remembered
+                    notRememberedCount = notRemembered
+
+                    // Quan trọng: xác định thẻ chưa học
+                    currentIndex = remembered + notRemembered
+
                     showCard()
-                },
-                onError = { }
-            )
-        } else {
-            // REVIEW MODE
-            ReviewRepository().getReviewFlashcards(
-                lessonId = lessonId,
-                status = filterStatus!!,
-                onSuccess = {
-                    flashcards = it
-                    currentIndex = 0
-                    showCard()
+                    updateRealtimeProgress()
                 }
-            )
-        }
+            },
+            onError = { }
+        )
     }
+
+
 
     /* ================= SHOW CARD ================= */
 
@@ -173,14 +182,18 @@ class FlashcardActivity : AppCompatActivity() {
     /* ================= NAVIGATION ================= */
 
     private fun nextCard() {
+        updateRealtimeProgress()
+
         currentIndex++
         if (currentIndex < flashcards.size) {
             showCard()
         } else {
-            Log.d("FlashcardFlow", "End of flashcards")
+            setResult(RESULT_OK)
             finish()
         }
     }
+
+
 
     /* ================= SAVE PROGRESS ================= */
 
@@ -194,4 +207,18 @@ class FlashcardActivity : AppCompatActivity() {
             status = status
         )
     }
+    private fun updateRealtimeProgress() {
+        val remaining = flashcards.size - rememberedCount - notRememberedCount
+
+        binding.txtRememberedCount.text = "✔ $rememberedCount"
+        binding.txtNotRememberedCount.text = "✖ $notRememberedCount"
+        binding.txtRemainingCount.text = "⏳ $remaining"
+
+        binding.progressStudy.progress =
+            ((rememberedCount + notRememberedCount) * 100) / flashcards.size
+    }
+
+
+
+
 }

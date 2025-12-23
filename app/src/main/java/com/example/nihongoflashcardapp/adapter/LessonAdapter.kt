@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nihongoflashcardapp.databinding.ItemLessonBinding
 import com.example.nihongoflashcardapp.models.Lesson
+import com.example.nihongoflashcardapp.repository.LessonProgressRepository
 
 class LessonAdapter(
     private val lessons: List<Lesson>,
-    private val onClick: (Lesson) -> Unit
+    private val onLearn: (Lesson) -> Unit,
+    private val onReview: (Lesson) -> Unit
 ) : RecyclerView.Adapter<LessonAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemLessonBinding)
@@ -16,9 +18,20 @@ class LessonAdapter(
 
         fun bind(lesson: Lesson) {
             binding.txtLessonTitle.text = lesson.title
-            binding.txtTotalCards.text = "Số từ: ${lesson.totalCards}"
-            binding.root.setOnClickListener { onClick(lesson) }
+
+            LessonProgressRepository().loadLessonProgress(
+                lesson.id,
+                lesson.totalCards
+            ) { remembered, notRemembered, notLearned ->
+                binding.txtTotalCards.text =
+                    "✔ $remembered  ✖ $notRemembered  ⏳ $notLearned"
+            }
+
+            binding.root.setOnClickListener { onLearn(lesson) }
+            binding.btnReview.setOnClickListener { onReview(lesson) }
         }
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
