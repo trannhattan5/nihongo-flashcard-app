@@ -1,11 +1,15 @@
 package com.example.nihongoflashcardapp.activities
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import com.example.nihongoflashcardapp.databinding.ActivityRegisterBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -23,6 +27,7 @@ class RegisterActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         startEnterAnimation()
+        setupErrorClearing()
 
         binding.btnRegister.setOnClickListener {
             performRegister()
@@ -33,36 +38,60 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupErrorClearing() {
+        // Tự động xóa lỗi khi người dùng bắt đầu gõ lại
+        binding.edtEmail.doAfterTextChanged { binding.tilEmail.error = null }
+        binding.edtPassword.doAfterTextChanged { binding.tilPassword.error = null }
+        binding.edtConfirmPassword.doAfterTextChanged { binding.tilConfirmPassword.error = null }
+    }
+    private fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
     private fun performRegister() {
         val email = binding.edtEmail.text.toString().trim()
         val password = binding.edtPassword.text.toString().trim()
         val confirmPass = binding.edtConfirmPassword.text.toString().trim()
 
-        if (email.isEmpty() || password.isEmpty() || confirmPass.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show()
+        // 1. Xóa lỗi cũ
+        binding.tilEmail.error = null
+        binding.tilPassword.error = null
+        binding.tilConfirmPassword.error = null
+
+        // 2. Kiểm tra dữ liệu (Validation)
+        if (email.isEmpty()) {
+            binding.tilEmail.error = "Vui lòng nhập Email"
+            return
+        }
+        else if (!isValidEmail(email)) {
+            binding.tilEmail.error = "Email không hợp lệ (Ví dụ: abc@gmail.com)"
+            showErrorSnackbar("Email sai định dạng!")
+            return
+        }
+        if (password.length < 8) { // CẬP NHẬT: Kiểm tra 8 ký tự
+            binding.tilPassword.error = "Mật khẩu phải từ 8 ký tự trở lên"
+            showErrorSnackbar("Mật khẩu quá ngắn!")
             return
         }
 
-        if (password.length < 6) {
-            Toast.makeText(this, "Mật khẩu phải từ 6 ký tự trở lên", Toast.LENGTH_SHORT).show()
+        if (confirmPass != password) {
+            binding.tilConfirmPassword.error = "Mật khẩu xác nhận không khớp"
             return
         }
 
-        if (password != confirmPass) {
-            Toast.makeText(this, "Mật khẩu xác nhận không khớp", Toast.LENGTH_SHORT).show()
-            return
-        }
-
+        // Hiển thị trạng thái đang xử lý
         binding.btnRegister.isEnabled = false
-        binding.btnRegister.text = "Đang xử lý..."
+        binding.btnRegister.text = "Đang tạo tài khoản..."
 
+        // 3. Tạo tài khoản trên Firebase Auth
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val uid = auth.currentUser?.uid ?: ""
                     saveUserToFirestore(uid, email)
                 } else {
-                    showError("Đăng ký thất bại: ${task.exception?.message}")
+                    binding.btnRegister.isEnabled = true
+                    binding.btnRegister.text = "ĐĂNG KÝ NGAY"
+                    showErrorSnackbar("Lỗi: ${task.exception?.message}")
                 }
             }
     }
@@ -77,27 +106,48 @@ class RegisterActivity : AppCompatActivity() {
         db.collection("users").document(uid)
             .set(userMap)
             .addOnSuccessListener {
-                // --- BƯỚC QUAN TRỌNG NHẤT Ở ĐÂY ---
-                auth.signOut() // Đăng xuất ngay lập tức sau khi đăng ký thành công
-                // ---------------------------------
+                auth.signOut() // Không tự động đăng nhập
 
-                Toast.makeText(this, "Đăng ký thành công! Mời bạn đăng nhập lại.", Toast.LENGTH_LONG).show()
+                showSuccessSnackbar("Đăng ký thành công! Mời bạn đăng nhập. 🎉")
 
-                // Chuyển về màn hình Login và xóa sạch các màn hình trước đó trong bộ nhớ
-                val intent = Intent(this, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
+                // Đợi 1 chút cho người dùng kịp nhìn thấy thông báo thành công
+                binding.root.postDelayed({
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                }, 1500)
             }
             .addOnFailureListener { e ->
-                showError("Lỗi lưu dữ liệu: ${e.message}")
+                binding.btnRegister.isEnabled = true
+                binding.btnRegister.text = "ĐĂNG KÝ NGAY"
+                showErrorSnackbar("Lỗi lưu dữ liệu: ${e.message}")
             }
     }
 
-    private fun showError(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-        binding.btnRegister.isEnabled = true
-        binding.btnRegister.text = "ĐĂNG KÝ NGAY"
+    // Hàm hiển thị Thông báo lỗi ĐẸP
+    private fun showErrorSnackbar(message: String) {
+        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+        snackbar.setBackgroundTint(Color.parseColor("#E91E63")) // Màu hồng đỏ nổi bật
+        snackbar.setTextColor(Color.WHITE)
+
+        val snackbarView = snackbar.view
+        val params = snackbarView.layoutParams as ViewGroup.MarginLayoutParams
+        params.setMargins(40, 0, 40, 100) // Cách lề và cách đáy
+        snackbarView.layoutParams = params
+        snackbarView.background = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = 30f // Bo góc
+            setColor(Color.parseColor("#E91E63"))
+        }
+        snackbar.show()
+    }
+
+    // Hàm hiển thị Thông báo thành công ĐẸP
+    private fun showSuccessSnackbar(message: String) {
+        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
+        snackbar.setBackgroundTint(Color.parseColor("#4CAF50")) // Màu xanh lá
+        snackbar.show()
     }
 
     private fun startEnterAnimation() {
