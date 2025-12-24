@@ -1,13 +1,19 @@
 package com.example.nihongoflashcardapp.repository
 
-
 import com.example.nihongoflashcardapp.firebase.FirebaseService
 import com.example.nihongoflashcardapp.models.Flashcard
+
 class ReviewRepository {
 
     private val db = FirebaseService.db
     private val auth = FirebaseService.auth
 
+    /**
+     * REVIEW ĐÚNG CHUẨN:
+     * - Lấy ALL flashcards
+     * - Lấy ALL progress
+     * - Lọc theo status hiện tại
+     */
     fun getReviewFlashcards(
         lessonId: String,
         status: String,
@@ -15,30 +21,40 @@ class ReviewRepository {
     ) {
         val userId = auth.currentUser?.uid ?: return
 
-        db.collection("user_progress")
-            .whereEqualTo("userId", userId)
+        // 1. Lấy toàn bộ flashcards của lesson
+        db.collection("flashcards")
             .whereEqualTo("lessonId", lessonId)
-            .whereEqualTo("status", status)
             .get()
-            .addOnSuccessListener { progressSnap ->
+            .addOnSuccessListener { cardSnap ->
 
-                val cardIds = progressSnap.documents
-                    .mapNotNull { it.getString("cardId") }
-                    .filter { it.isNotBlank() }
-
-                if (cardIds.isEmpty()) {
-                    onSuccess(emptyList())
-                    return@addOnSuccessListener
+                val allCards = cardSnap.documents.map { doc ->
+                    Flashcard(
+                        id = doc.id,
+                        lessonId = lessonId,
+                        word = doc.getString("word") ?: "",
+                        reading = doc.getString("reading") ?: "",
+                        meaning = doc.getString("meaning") ?: "",
+                        example = doc.getString("example") ?: ""
+                    )
                 }
 
-                db.collection("flashcards")
-                    .whereIn(
-                        com.google.firebase.firestore.FieldPath.documentId(),
-                        cardIds
-                    )
+                // 2. Lấy toàn bộ progress của user trong lesson
+                db.collection("user_progress")
+                    .whereEqualTo("userId", userId)
+                    .whereEqualTo("lessonId", lessonId)
                     .get()
-                    .addOnSuccessListener { cardSnap ->
-                        onSuccess(cardSnap.toObjects(Flashcard::class.java))
+                    .addOnSuccessListener { progressSnap ->
+
+                        val progressMap = progressSnap.documents.associate {
+                            it.getString("cardId")!! to it.getString("status")
+                        }
+
+                        // 3. Lọc theo status HIỆN TẠI
+                        val result = allCards.filter {
+                            progressMap[it.id] == status
+                        }
+
+                        onSuccess(result)
                     }
             }
     }

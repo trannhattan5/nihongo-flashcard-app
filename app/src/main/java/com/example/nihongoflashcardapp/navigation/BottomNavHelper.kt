@@ -20,8 +20,7 @@ object BottomNavHelper {
 
             val intent = when (item.itemId) {
                 R.id.nav_level -> Intent(activity, LevelActivity::class.java)
-                R.id.nav_review -> Intent(activity, ReviewActivity::class.java)
-                R.id.nav_progress -> Intent(activity, ProgressActivity::class.java)
+                 R.id.nav_progress -> Intent(activity, ProgressActivity::class.java)
                 else -> null
             }
 

@@ -1,16 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light">
+    android:background="@color/jp_bg_zen">
 
-    <!-- Header Section (Đồng bộ với các màn hình trước) -->
+    <!-- Header Section: Matcha Gradient & Zen Decoration -->
     <View
         android:id="@+id/headerBg"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:background="@color/primary_color"
+        android:background="@drawable/bg_header_matcha"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Chữ Nhật trang trí in chìm: "Ôn tập" (復習) -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="復習"
+        android:textColor="#15000000"
+        android:textSize="100sp"
+        android:textStyle="bold"
+        android:layout_marginTop="-20dp"
+        android:layout_marginEnd="-10dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -20,8 +34,8 @@
         android:text="Ôn tập"
         android:textColor="@color/white"
         android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_marginTop="40dp"
+        android:fontFamily="sans-serif-black"
+        android:layout_marginTop="50dp"
         android:layout_marginStart="24dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -30,28 +44,28 @@
         android:id="@+id/txtSubtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Lựa chọn chế độ phù hợp để tối ưu hóa việc ghi nhớ"
-        android:textColor="#D1D9FF"
+        android:text="Lựa chọn chế độ để tối ưu việc ghi nhớ"
+        android:textColor="#E0F2F1"
         android:textSize="14sp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="60dp"
         app:layout_constraintTop_toBottomOf="@id/txtTitle"
         app:layout_constraintStart_toStartOf="@id/txtTitle"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Chế độ: Học lại thẻ đã nhớ -->
-    <androidx.cardview.widget.CardView
+    <!-- Card: Học lại thẻ đã thuộc -->
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardReviewRemembered"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="32dp"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#F0F0F0"
         app:layout_constraintTop_toBottomOf="@id/headerBg">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -59,18 +73,24 @@
             android:layout_height="wrap_content"
             android:padding="20dp">
 
-            <ImageView
-                android:id="@+id/imgIconRemembered"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/circle_shape"
-                android:backgroundTint="#E8F5E9"
-                android:padding="12dp"
-                android:src="@android:drawable/checkbox_on_background"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <View
+                android:id="@+id/iconBgRemembered"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_circle_soft"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/success_green" />
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/checkbox_on_background"
+                app:tint="@color/jp_green_dark"
+                app:layout_constraintStart_toStartOf="@id/iconBgRemembered"
+                app:layout_constraintEnd_toEndOf="@id/iconBgRemembered"
+                app:layout_constraintTop_toTopOf="@id/iconBgRemembered"
+                app:layout_constraintBottom_toBottomOf="@id/iconBgRemembered" />
 
             <TextView
                 android:id="@+id/txtLabelRemembered"
@@ -78,96 +98,111 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="Thẻ đã thuộc"
-                android:textColor="@color/text_main"
+                android:textColor="@color/jp_text_main"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/imgIconRemembered"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/iconBgRemembered"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/txtDescRemembered"
+                app:layout_constraintVertical_chainStyle="packed"/>
 
             <TextView
+                android:id="@+id/txtDescRemembered"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Củng cố lại những từ bạn đã nhớ vững"
-                android:textColor="@color/text_sub"
+                android:text="Củng cố lại những từ đã nhớ vững"
+                android:textColor="@color/jp_text_sub"
                 android:textSize="13sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="2dp"
                 app:layout_constraintStart_toStartOf="@id/txtLabelRemembered"
-                app:layout_constraintTop_toBottomOf="@id/txtLabelRemembered" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+                app:layout_constraintTop_toBottomOf="@id/txtLabelRemembered"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <!-- Chế độ: Học lại thẻ chưa nhớ -->
-    <androidx.cardview.widget.CardView
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Card: Học lại thẻ cần ôn -->
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardReviewNotRemembered"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="16dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="6dp"
-        android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        app:layout_constraintTop_toBottomOf="@id/cardReviewRemembered"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:cardCornerRadius="24dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#F0F0F0"
+        app:layout_constraintTop_toBottomOf="@id/cardReviewRemembered">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:padding="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="20dp">
 
-            <ImageView
-                android:id="@+id/imgIconNotRemembered"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@android:drawable/ic_dialog_alert"
-                app:tint="@color/error_red"
-                android:background="@drawable/circle_shape"
-                android:backgroundTint="#FFEBEE"
-                android:padding="12dp"
+            <View
+                android:id="@+id/iconBgAlert"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_circle_soft"
+                android:backgroundTint="#FFF1F0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_dialog_alert"
+                app:tint="#E57373"
+                app:layout_constraintStart_toStartOf="@id/iconBgAlert"
+                app:layout_constraintEnd_toEndOf="@id/iconBgAlert"
+                app:layout_constraintTop_toTopOf="@id/iconBgAlert"
+                app:layout_constraintBottom_toBottomOf="@id/iconBgAlert" />
 
             <TextView
                 android:id="@+id/txtLabelNotRemembered"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:text="Thẻ cần ôn lại"
+                android:textColor="@color/jp_text_main"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_main"
-                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toEndOf="@id/iconBgAlert"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/imgIconNotRemembered"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintBottom_toTopOf="@id/txtDescNotRemembered"
+                app:layout_constraintVertical_chainStyle="packed"/>
 
             <TextView
+                android:id="@+id/txtDescNotRemembered"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Tập trung học những từ bạn chưa thuộc"
+                android:text="Tập trung học những từ chưa thuộc"
+                android:textColor="@color/jp_text_sub"
                 android:textSize="13sp"
-                android:textColor="@color/text_sub"
-                app:layout_constraintTop_toBottomOf="@id/txtLabelNotRemembered"
+                android:layout_marginTop="2dp"
                 app:layout_constraintStart_toStartOf="@id/txtLabelNotRemembered"
-                app:layout_constraintEnd_toEndOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+                app:layout_constraintTop_toBottomOf="@id/txtLabelNotRemembered"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <!-- Bottom Navigation -->
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Bottom Navigation: Bo tròn hiện đại -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
-        android:layout_width="0dp"
-        android:layout_height="72dp"
-        android:background="@color/white"
-        app:elevation="16dp"
-        app:itemIconTint="@color/primary_color"
-        app:itemTextColor="@color/primary_color"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_bottom_nav_zen"
+        app:elevation="8dp"
+        app:itemIconTint="@color/jp_green_dark"
+        app:itemTextColor="@color/jp_green_dark"
+        app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

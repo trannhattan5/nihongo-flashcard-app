@@ -3,26 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light">
+    android:background="@color/jp_bg_zen">
 
-    <!-- Header hiện đại -->
+    <!-- Header Gradient Xanh Mát -->
     <View
         android:id="@+id/headerBg"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:background="@color/primary_color"
+        android:layout_height="200dp"
+        android:background="@drawable/bg_header_matcha"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Chữ Nhật mờ làm nền trang trí (Calligraphy style) -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="日本語"
+        android:textColor="#20000000"
+        android:textSize="80sp"
+        android:textStyle="bold"
+        android:layout_marginEnd="-20dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txtTitle"
+        android:id="@+id/txtHeaderLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chọn cấp độ JLPT"
+        android:text="Cấp độ JLPT"
         android:textColor="@color/white"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_marginTop="48dp"
+        android:textSize="26sp"
+        android:fontFamily="sans-serif-medium"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="56dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -30,39 +42,40 @@
         android:id="@+id/txtDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Hãy chọn mục tiêu phù hợp với trình độ của bạn để bắt đầu luyện tập."
-        android:textColor="#D1D9FF"
+        android:text="Chọn một cấp độ để bắt đầu hành trình học tập nhẹ nhàng của bạn."
+        android:textColor="#F0F0F0"
         android:textSize="14sp"
-        android:layout_marginEnd="60dp"
-        app:layout_constraintTop_toBottomOf="@id/txtTitle"
-        app:layout_constraintStart_toStartOf="@id/txtTitle"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="80dp"
+        app:layout_constraintTop_toBottomOf="@id/txtHeaderLabel"
+        app:layout_constraintStart_toStartOf="@id/txtHeaderLabel"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Danh sách cấp độ -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLevels"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingHorizontal="12dp"
-        android:paddingTop="20dp"
         android:clipToPadding="false"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="100dp"
         app:layout_constraintTop_toBottomOf="@id/headerBg"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="-30dp"/>
+        android:layout_marginTop="-40dp"/>
 
+    <!-- Bottom Nav kiểu tối giản -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
-        android:layout_width="0dp"
-        android:layout_height="72dp"
-        android:background="@color/white"
-        app:elevation="16dp"
-        app:itemIconTint="@color/primary_color"
-        app:itemTextColor="@color/primary_color"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_bottom_nav_zen"
+        app:elevation="4dp"
+        app:itemIconTint="@color/jp_mint_dark"
+        app:itemTextColor="@color/jp_mint_dark"
+        app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

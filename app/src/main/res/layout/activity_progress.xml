@@ -1,16 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light">
+    android:background="@color/jp_bg_zen">
 
-    <!-- Header Section -->
+    <!-- Header Section: Matcha Gradient -->
     <View
         android:id="@+id/headerBg"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:background="@color/primary_color"
+        android:background="@drawable/bg_header_matcha"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Chữ Nhật trang trí in chìm: "Cá nhân" (本人) -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="本人"
+        android:textColor="#15000000"
+        android:textSize="100sp"
+        android:textStyle="bold"
+        android:layout_marginTop="-10dp"
+        android:layout_marginEnd="-10dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -19,32 +33,34 @@
         android:layout_height="wrap_content"
         android:text="Tài khoản"
         android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginTop="24dp"
+        android:textSize="22sp"
+        android:fontFamily="sans-serif-black"
+        android:layout_marginTop="40dp"
         android:layout_marginStart="24dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <!-- Profile Info Area -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/avatarCard"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="20dp"
-        app:cardCornerRadius="32dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="24dp"
+        app:cardCornerRadius="36dp"
         app:cardElevation="0dp"
-        app:cardBackgroundColor="#5C6BC0"
+        app:strokeWidth="3dp"
+        app:strokeColor="#40FFFFFF"
+        app:cardBackgroundColor="@color/jp_green_sage"
         app:layout_constraintStart_toStartOf="@id/txtTitle"
         app:layout_constraintTop_toBottomOf="@id/txtTitle">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:padding="16dp"
+            android:src="@drawable/ic_leaf_zen"
+            android:padding="18dp"
             app:tint="@color/white" />
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/txtUserName"
@@ -52,30 +68,35 @@
         android:layout_height="wrap_content"
         android:text="Xin chào, User"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         android:layout_marginStart="16dp"
         app:layout_constraintTop_toTopOf="@id/avatarCard"
-        app:layout_constraintStart_toEndOf="@id/avatarCard"/>
+        app:layout_constraintStart_toEndOf="@id/avatarCard"
+        app:layout_constraintBottom_toTopOf="@id/txtUserEmail"
+        app:layout_constraintVertical_chainStyle="packed"/>
 
     <TextView
         android:id="@+id/txtUserEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="user@email.com"
-        android:textColor="#D1D9FF"
+        android:textColor="#E0F2F1"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/txtUserName"
-        app:layout_constraintStart_toStartOf="@id/txtUserName"/>
+        app:layout_constraintStart_toStartOf="@id/txtUserName"
+        app:layout_constraintBottom_toBottomOf="@id/avatarCard"/>
 
-    <!-- Thẻ Tổng số từ -->
-    <androidx.cardview.widget.CardView
+    <!-- Thẻ Tổng số từ (Overlapping Header) -->
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardTotal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="8dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#F0F0F0"
         app:layout_constraintTop_toBottomOf="@id/headerBg"
         app:layout_constraintBottom_toBottomOf="@id/headerBg"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,38 +107,41 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="20dp">
+            android:padding="24dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TỔNG SỐ TỪ ĐÃ HỌC"
-                android:textColor="@color/text_sub"
-                android:textSize="11sp"
-                android:letterSpacing="0.1"
-                android:textStyle="bold"/>
+                android:textColor="@color/jp_text_sub"
+                android:textSize="12sp"
+                android:letterSpacing="0.15"
+                android:fontFamily="sans-serif-medium"/>
 
             <TextView
                 android:id="@+id/txtTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="150"
-                android:textColor="@color/primary_color"
-                android:textSize="36sp"
-                android:textStyle="bold"/>
+                android:textColor="@color/jp_green_dark"
+                android:textSize="42sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp"/>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <!-- Thẻ Đã thuộc -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardRemembered"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="8dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#F0F0F0"
         app:layout_constraintTop_toBottomOf="@id/cardTotal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cardNotRemembered">
@@ -126,40 +150,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@android:drawable/checkbox_on_background"
-                app:tint="@color/success_green"/>
+            android:padding="20dp">
+            <View
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_circle_soft"
+                android:backgroundTint="@color/jp_green_light"/>
             <TextView
                 android:id="@+id/txtRemembered"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="120"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_main"
-                android:layout_marginTop="4dp"/>
+                android:textColor="@color/jp_text_main"
+                android:layout_marginTop="8dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Đã thuộc"
-                android:textColor="@color/success_green"
-                android:textSize="12sp" />
+                android:textColor="@color/jp_green_dark"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif-medium" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <!-- Thẻ Cần ôn lại -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardNotRemembered"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="8dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#F0F0F0"
         app:layout_constraintTop_toBottomOf="@id/cardTotal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/cardRemembered">
@@ -168,43 +195,47 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@android:drawable/ic_delete"
-                app:tint="@color/error_red"/>
+            android:padding="20dp">
+            <View
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_circle_soft"
+                android:backgroundTint="#FFF1F0"/>
             <TextView
                 android:id="@+id/txtNotRemembered"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="30"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_main"
-                android:layout_marginTop="4dp"/>
+                android:textColor="@color/jp_text_main"
+                android:layout_marginTop="8dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cần ôn lại"
-                android:textColor="@color/error_red"
-                android:textSize="12sp" />
+                android:textColor="#E57373"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif-medium" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <!-- Nút Đăng xuất (Đã được đưa ra ngoài CardView và căn chỉnh đúng) -->
-    <androidx.appcompat.widget.AppCompatButton
+    <!-- Nút Đăng xuất kiểu Zen -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogout"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="32dp"
-        android:background="@drawable/btn_outline_red"
         android:text="Đăng xuất"
         android:textAllCaps="false"
-        android:textColor="@color/error_red"
+        android:textColor="#E57373"
         android:textSize="16sp"
-        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        app:cornerRadius="16dp"
+        app:backgroundTint="#FFF1F0"
+        app:strokeWidth="1dp"
+        app:strokeColor="#FFCDD2"
         app:layout_constraintTop_toBottomOf="@id/cardNotRemembered"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -212,15 +243,16 @@
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
-        android:layout_width="0dp"
-        android:layout_height="72dp"
-        android:background="@color/white"
-        app:elevation="16dp"
-        app:itemIconTint="@color/primary_color"
-        app:itemTextColor="@color/primary_color"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_bottom_nav_zen"
+        app:elevation="8dp"
+        app:itemIconTint="@color/jp_green_dark"
+        app:itemTextColor="@color/jp_green_dark"
+        app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

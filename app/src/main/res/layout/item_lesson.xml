@@ -4,87 +4,88 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
+    android:layout_marginHorizontal="6dp"
     android:layout_marginVertical="8dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="6dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="1dp"
     app:cardBackgroundColor="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:padding="20dp"
+        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/btnReview"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginEnd="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_popup_sync"
-            app:tint="@color/success_green"
-            app:layout_constraintEnd_toStartOf="@id/btnStart"
-            app:layout_constraintTop_toTopOf="@id/btnStart"
-            app:layout_constraintBottom_toBottomOf="@id/btnStart"/>
-        <!-- Biểu tượng bài học (Hình tròn màu nhạt) -->
-        <View
-            android:id="@+id/iconBg"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/circle_shape"
-            android:backgroundTint="@color/primary_light"
+
+        <!-- Icon bài học: Kiểu con dấu vuông bo tròn (Hanko style) -->
+        <FrameLayout
+            android:id="@+id/iconContainer"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:background="@drawable/bg_lesson_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
-            android:id="@+id/txtIconText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="学"
-            android:textColor="@color/primary_color"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="@id/iconBg"
-            app:layout_constraintEnd_toEndOf="@id/iconBg"
-            app:layout_constraintTop_toTopOf="@id/iconBg"
-            app:layout_constraintBottom_toBottomOf="@id/iconBg"/>
+            <TextView
+                android:id="@+id/txtIconText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="学"
+                android:textColor="@color/jp_mint_dark"
+                android:textStyle="bold"
+                android:textSize="22sp" />
+        </FrameLayout>
 
-        <!-- Nội dung chính -->
+        <!-- Thông tin bài học -->
         <TextView
             android:id="@+id/txtLessonTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Lesson 01"
-            android:textSize="18sp"
+            android:text="Bài 01: Chào hỏi"
+            android:textSize="17sp"
             android:textStyle="bold"
-            android:textColor="@color/text_main"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iconBg"
-            app:layout_constraintEnd_toStartOf="@id/btnStart"/>
+            android:textColor="@color/jp_text_main"
+            app:layout_constraintTop_toTopOf="@id/iconContainer"
+            app:layout_constraintStart_toEndOf="@id/iconContainer"
+            app:layout_constraintEnd_toStartOf="@id/btnReview"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@id/txtTotalCards"/>
 
         <TextView
             android:id="@+id/txtTotalCards"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="25 từ vựng"
-            android:textSize="14sp"
-            android:textColor="@color/text_sub"
+            android:text="25 Từ vựng  •  10 Ngữ pháp"
+            android:textSize="12sp"
+            android:textColor="@color/jp_text_sub"
+            android:layout_marginTop="4dp"
             app:layout_constraintTop_toBottomOf="@id/txtLessonTitle"
             app:layout_constraintStart_toStartOf="@id/txtLessonTitle"
-            android:layout_marginTop="4dp"/>
+            app:layout_constraintBottom_toBottomOf="@id/iconContainer"/>
 
-        <!-- Nút hình tròn mũi tên -->
-        <ImageView
+        <!-- Nút hành động: Sử dụng icon tinh tế hơn -->
+        <ImageButton
+            android:id="@+id/btnReview"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_button_circle_secondary"
+            android:src="@drawable/ic_refresh_zen"
+            app:tint="@color/jp_mint_dark"
+            app:layout_constraintEnd_toStartOf="@id/btnStart"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageButton
             android:id="@+id/btnStart"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_media_play"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_play_zen"
+             app:tint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txtLessonTitle"
-            app:tint="@color/primary_color" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

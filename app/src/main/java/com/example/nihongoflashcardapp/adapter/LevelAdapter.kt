@@ -16,6 +16,8 @@ class LevelAdapter(
 
         fun bind(level: Level) {
             binding.txtLevelName.text = level.name
+            binding.txtLevelDesc.text = level.description
+            binding.txtLevelFullTitle.text = level.description
             binding.root.setOnClickListener {
                 onClick(level)
             }

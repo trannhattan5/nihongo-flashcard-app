@@ -5,10 +5,7 @@
         android:title="Trang chủ"
         android:icon="@drawable/ic_home"/>
 
-    <item
-        android:id="@+id/nav_review"
-        android:title="Ôn tập"
-        android:icon="@drawable/ic_review"/>
+
 
     <item
         android:id="@+id/nav_progress"

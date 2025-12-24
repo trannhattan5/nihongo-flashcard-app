@@ -3,15 +3,16 @@ package com.example.nihongoflashcardapp.repository
 import android.util.Log
 import com.example.nihongoflashcardapp.firebase.FirebaseService
 import com.example.nihongoflashcardapp.models.Flashcard
-import com.example.nihongoflashcardapp.models.UserProgress
-import kotlin.math.log
 
 class FlashcardRepository {
 
     private val db = FirebaseService.db
     private val auth = FirebaseService.auth
 
-    fun getFlashcards(
+    /* =========================================================
+     * 1. LẤY TOÀN BỘ FLASHCARD THEO LESSON (DÙNG LÀM CHUẨN)
+     * ========================================================= */
+    fun getAllFlashcards(
         lessonId: String,
         onSuccess: (List<Flashcard>) -> Unit,
         onError: (String) -> Unit
@@ -19,34 +20,72 @@ class FlashcardRepository {
         db.collection("flashcards")
             .whereEqualTo("lessonId", lessonId)
             .get()
-            .addOnSuccessListener {
-                Log.d("FlashcardTest", "Query flashcards size = ${it.size()}")
-                it.documents.forEach { doc ->
-                    Log.d("FlashcardTest", "DocId=${doc.id}, data=${doc.data}")
-                }
-                val flashcards = it.documents.map { doc ->
+            .addOnSuccessListener { snap ->
+                val cards = snap.documents.map { doc ->
                     Flashcard(
                         id = doc.id,
-                        lessonId = doc.getString("lessonId") ?: "",
+                        lessonId = lessonId,
                         word = doc.getString("word") ?: "",
                         reading = doc.getString("reading") ?: "",
                         meaning = doc.getString("meaning") ?: "",
                         example = doc.getString("example") ?: ""
                     )
                 }
-                onSuccess(flashcards)
-
+                onSuccess(cards)
             }
             .addOnFailureListener {
-                 onError(it.message ?: "Load flashcards failed")
+                onError(it.message ?: "Load flashcards failed")
             }
-        Log.d(
-            "FlashcardFlow",
-            "Firestore projectId = ${FirebaseService.db.app.options.projectId}"
-        )
-
     }
 
+    /* =========================================================
+     * 2. LẤY FLASHCARD CHƯA HỌC (MODE_LEARN_NEW)
+     * ========================================================= */
+    fun getUnlearnedFlashcards(
+        lessonId: String,
+        onSuccess: (List<Flashcard>) -> Unit
+    ) {
+        val userId = auth.currentUser?.uid ?: return
+
+        // 1. Lấy toàn bộ thẻ của lesson
+        db.collection("flashcards")
+            .whereEqualTo("lessonId", lessonId)
+            .get()
+            .addOnSuccessListener { cardSnap ->
+
+                val allCards = cardSnap.documents.map { doc ->
+                    Flashcard(
+                        id = doc.id,
+                        lessonId = lessonId,
+                        word = doc.getString("word") ?: "",
+                        reading = doc.getString("reading") ?: "",
+                        meaning = doc.getString("meaning") ?: "",
+                        example = doc.getString("example") ?: ""
+                    )
+                }
+
+                // 2. Lấy progress của user
+                db.collection("user_progress")
+                    .whereEqualTo("userId", userId)
+                    .whereEqualTo("lessonId", lessonId)
+                    .get()
+                    .addOnSuccessListener { progressSnap ->
+
+                        val learnedIds = progressSnap.documents
+                            .mapNotNull { it.getString("cardId") }
+                            .toSet()
+
+                        // 3. Chỉ trả về thẻ CHƯA học
+                        onSuccess(
+                            allCards.filter { it.id !in learnedIds }
+                        )
+                    }
+            }
+    }
+
+    /* =========================================================
+     * 3. LƯU / CẬP NHẬT TRẠNG THÁI FLASHCARD
+     * ========================================================= */
     fun saveProgress(
         lessonId: String,
         cardId: String,
@@ -83,6 +122,10 @@ class FlashcardRepository {
                 }
             }
     }
+
+    /* =========================================================
+     * 4. LOAD PROGRESS CỦA LESSON (DÙNG CHO UI + STAT)
+     * ========================================================= */
     fun loadLessonProgress(
         lessonId: String,
         totalCards: Int,
@@ -110,6 +153,4 @@ class FlashcardRepository {
                 onResult(remembered, notRemembered, notLearned)
             }
     }
-
-
 }
