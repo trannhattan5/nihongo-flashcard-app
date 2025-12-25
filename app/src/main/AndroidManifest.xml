@@ -16,7 +16,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".activities.SplashActivity"
+            android:name=".activities.LoadingActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ProgressActivity"

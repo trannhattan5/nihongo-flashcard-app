@@ -1,0 +1,23 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Vòng tròn Enso (Nét bút lông cách điệu) -->
+    <path
+        android:pathData="M80,20C70,10 55,8 45,12C30,18 20,35 22,55C25,75 45,88 65,85C75,83 85,75 88,65"
+        android:strokeWidth="6"
+        android:strokeColor="#2E7D32"
+        android:strokeLineCap="round" />
+
+    <!-- Chữ Hiragana 'あ' (A) cách điệu tối giản -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M40,35H60M50,25V55C50,55 50,65 40,65C30,65 30,55 35,50C40,45 55,45 65,55C75,65 65,80 50,80" />
+
+    <!-- Một lá trà nhỏ trang trí phía trên -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M75,15C80,15 85,20 85,25C85,25 80,25 75,20C75,20 75,15 75,15Z" />
+</vector>

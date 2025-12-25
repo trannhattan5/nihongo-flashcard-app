@@ -126,9 +126,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun goToMainActivity() {
-        val intent = Intent(this, LevelActivity::class.java)
+        // Chuyển sang màn hình Loading trung gian
+        val intent = Intent(this, LoadingActivity::class.java)
         startActivity(intent)
-        finish()
+        finish() // Đóng Login để không quay lại được bằng nút Back
     }
 
     private fun startAnimations() {
