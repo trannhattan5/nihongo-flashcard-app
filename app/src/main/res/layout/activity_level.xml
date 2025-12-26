@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -5,21 +6,21 @@
     android:layout_height="match_parent"
     android:background="@color/jp_bg_zen">
 
-    <!-- Header Gradient Xanh Mát -->
+    <!-- Header Gradient -->
     <View
         android:id="@+id/headerBg"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="220dp"
         android:background="@drawable/bg_header_matcha"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Chữ Nhật mờ làm nền trang trí (Calligraphy style) -->
+    <!-- Chữ Nhật mờ trang trí -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="日本語"
-        android:textColor="#20000000"
-        android:textSize="80sp"
+        android:textColor="#15000000"
+        android:textSize="100sp"
         android:textStyle="bold"
         android:layout_marginEnd="-20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,10 +32,10 @@
         android:layout_height="wrap_content"
         android:text="Cấp độ JLPT"
         android:textColor="@color/white"
-        android:textSize="26sp"
-        android:fontFamily="sans-serif-medium"
+        android:textSize="28sp"
+        android:textStyle="bold"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="60dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -43,14 +44,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Chọn một cấp độ để bắt đầu hành trình học tập nhẹ nhàng của bạn."
-        android:textColor="#F0F0F0"
-        android:textSize="14sp"
+        android:textColor="#E0E0E0"
+        android:textSize="15sp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="80dp"
         app:layout_constraintTop_toBottomOf="@id/txtHeaderLabel"
         app:layout_constraintStart_toStartOf="@id/txtHeaderLabel"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Danh sách cấp độ -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLevels"
         android:layout_width="match_parent"
@@ -61,20 +63,22 @@
         android:paddingBottom="100dp"
         app:layout_constraintTop_toBottomOf="@id/headerBg"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="-40dp"/>
+        android:layout_marginTop="-30dp"/>
 
-    <!-- Bottom Nav kiểu tối giản -->
+    <!-- Bottom Nav kiểu Floating (Nổi) -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="72dp"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/bg_bottom_nav_zen"
-        app:elevation="4dp"
+        app:elevation="12dp"
+        app:itemIconSize="26dp"
         app:itemIconTint="@color/jp_mint_dark"
         app:itemTextColor="@color/jp_mint_dark"
         app:labelVisibilityMode="unlabeled"
+        app:itemActiveIndicatorStyle="@style/CustomIndicator"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 

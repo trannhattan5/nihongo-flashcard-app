@@ -79,4 +79,8 @@ The project is organized into several key packages to maintain a clean architect
 -   `repository`: Abstracts data sources (Firebase) from the rest of the app. Each repository handles data operations for a specific feature.
 -   `models`: Defines the Kotlin data classes that represent the objects in the application (e.g., `Flashcard`, `Lesson`, `UserProgress`).
 -   `navigation`: Helpers for handling navigation, such as the bottom navigation bar.
+<<<<<<< HEAD
 -   `firebase`: Contains the singleton object for accessing Firebase services.
+=======
+-   `firebase`: Contains the singleton object for accessing Firebase services.
+>>>>>>> 2dc70c73214cdc3c86e3922a811e1187803dfdc9

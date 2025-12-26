@@ -44,11 +44,10 @@ class LessonActivity : AppCompatActivity() {
             onSuccess = { lessons ->
                 binding.rvLessons.adapter = LessonAdapter(
                     lessons,
-                    onLearn = { lesson ->
-                        openFlashcards(lesson.id)
-                    },
-                    onReview = { lesson ->
-                        openReview(lesson.id)
+                    onLearn = { lesson -> openFlashcards(lesson.id) },
+                    onReview = { lesson -> openReview(lesson.id) },
+                    onPlay = { lesson -> // 3. Mở màn hình nối từ khi nhấn nút Play
+                        openMatchingGame(lesson.id, levelId)
                     }
                 )
             },
@@ -56,7 +55,13 @@ class LessonActivity : AppCompatActivity() {
         )
     }
 
-
+    // 4. Hàm mở MatchingGameActivity
+    private fun openMatchingGame(lessonId: String, levelId: String) {
+        val intent = Intent(this, MatchingGameActivity::class.java)
+        intent.putExtra("LESSON_ID", lessonId)
+        intent.putExtra("LEVEL_ID", levelId)
+        startActivity(intent)
+    }
     private val REQUEST_LEARN = 1001
 
     private fun openFlashcards(lessonId: String) {
