@@ -1,10 +1,7 @@
 package com.example.nihongoflashcardapp.activities
 
 import android.graphics.Color
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +10,6 @@ import com.example.nihongoflashcardapp.databinding.ActivityMatchingGameBinding
 import com.example.nihongoflashcardapp.models.Flashcard
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.firestore.FirebaseFirestore
 
 class MatchingGameActivity : AppCompatActivity() {
@@ -27,9 +23,13 @@ class MatchingGameActivity : AppCompatActivity() {
     private var selectedJpData: Flashcard? = null
     private var selectedViData: Flashcard? = null
 
-    private var correctCount = 0
-    private var isGameActive = false
+    // Quản lý từ vựng
+    private var fullVocabList = mutableListOf<Flashcard>()
+    private var remainingVocabList = mutableListOf<Flashcard>()
+    private var correctInRound = 0
+    private var totalMatched = 0
 
+    private var isGameActive = false
     private var currentLevel: String = "N5"
     private var currentLessonId: String? = null
 
@@ -38,134 +38,72 @@ class MatchingGameActivity : AppCompatActivity() {
         binding = ActivityMatchingGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Nhận dữ liệu từ Intent
         currentLevel = intent.getStringExtra("LEVEL_ID") ?: "N5"
-        // Kiểm tra kỹ nếu lesson_id rỗng thì coi như là null để lọc theo Level
-        val lessonIdIntent = intent.getStringExtra("LESSON_ID")
-        currentLessonId = if (lessonIdIntent.isNullOrBlank()) null else lessonIdIntent
+        currentLessonId = intent.getStringExtra("LESSON_ID")
 
-        // Chỉnh tiêu đề hiển thị
-        binding.tvTitle.text = if (currentLessonId != null) "Thử thách theo Bài" else "Thử thách nối từ $currentLevel"
-
-        loadData(currentLevel, currentLessonId)
-
-        binding.btnReset.setOnClickListener {
-            resetGame(currentLevel, currentLessonId)
-        }
+        loadDataFromFirebase()
+        binding.btnReset.setOnClickListener { resetFullGame() }
     }
 
-    private fun loadData(level: String, lessonId: String?) {
-        // LOGIC LỌC: Ưu tiên lọc theo Lesson, nếu không có mới lọc theo Level
-        val query = if (lessonId != null) {
-            db.collection("flashcards").whereEqualTo("lessonId", lessonId)
+    private fun loadDataFromFirebase() {
+        // Lọc nghiêm ngặt theo Lesson hoặc Level
+        val query = if (!currentLessonId.isNullOrEmpty()) {
+            db.collection("flashcards").whereEqualTo("lessonId", currentLessonId)
         } else {
-            db.collection("flashcards").whereEqualTo("levelId", level)
+            db.collection("flashcards").whereEqualTo("levelId", currentLevel)
         }
 
         query.get().addOnSuccessListener { result ->
-            val allCards = result.documents.mapNotNull { doc ->
-                val flashcard = doc.toObject(Flashcard::class.java)
-                flashcard?.copy(id = doc.id)
-            }
+            fullVocabList = result.documents.mapNotNull { doc ->
+                // Thủ công gán ID để so sánh đúng sai chính xác 100%
+                doc.toObject(Flashcard::class.java)?.copy(id = doc.id)
+            }.toMutableList()
 
-            if (allCards.size >= 4) {
-                val gameData = allCards.shuffled().take(4)
-                setupGame(gameData)
-                startTimer()
+            if (fullVocabList.size >= 2) {
+                binding.overallProgress.max = fullVocabList.size
+                resetFullGame()
             } else {
-                val errorTarget = if (lessonId != null) "Bài học này" else "Cấp độ $level"
-                Toast.makeText(this, "$errorTarget chưa đủ 4 từ để chơi!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Không đủ từ vựng để chơi!", Toast.LENGTH_SHORT).show()
                 finish()
             }
-        }.addOnFailureListener {
-            Toast.makeText(this, "Lỗi kết nối Firebase!", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun handleCorrectMatch() {
-        selectedJpCard?.apply {
-            setCardBackgroundColor(Color.parseColor("#C8E6C9")) // Màu xanh lá nhẹ
-            setStrokeColor(Color.parseColor("#4CAF50"))
-            isEnabled = false
-        }
-        selectedViCard?.apply {
-            setCardBackgroundColor(Color.parseColor("#C8E6C9"))
-            setStrokeColor(Color.parseColor("#4CAF50"))
-            isEnabled = false
-        }
-
-        correctCount++
-
-        if (correctCount == 4) {
-            isGameActive = false
-            timer?.cancel()
-
-            // THÔNG BÁO ĐÃ THUỘC THEO BÀI HOẶC THEO CẤP ĐỘ
-            val successMessage = if (currentLessonId != null)
-                "Chúc mừng! Bạn đã thuộc hết từ vựng của bài học này."
-            else
-                "Chúc mừng! Bạn đã thuộc hết từ vựng của cấp độ $currentLevel."
-
-            showGameOverDialog(successMessage, true)
-        }
-        clearSelection()
-    }
-
-    private fun showGameOverDialog(msg: String, isWin: Boolean) {
-        isGameActive = false
-        // Sử dụng MaterialAlertDialogBuilder để giao diện thông báo ĐẸP HƠN
-        MaterialAlertDialogBuilder(this)
-            .setTitle(if (isWin) "Hoàn thành!" else "⏰ Hết giờ!")
-            .setMessage(msg)
-            .setCancelable(false)
-            .setPositiveButton("Chơi lại") { _, _ ->
-                resetGame(currentLevel, currentLessonId)
-            }
-            .setNegativeButton("Thoát") { _, _ -> finish() }
-            .show()
-    }
-
-    // --- CÁC HÀM HỖ TRỢ GIỮ NGUYÊN NHƯNG ĐÃ ĐƯỢC TỐI ƯU ---
-
-    private fun startTimer() {
+    private fun startNextRound() {
+        correctInRound = 0
         isGameActive = true
-        timer?.cancel()
-        timer = object : CountDownTimer(16000, 100) {
-            override fun onTick(millisUntilFinished: Long) {
-                binding.tvTimerText.text = "${millisUntilFinished / 1000}s"
-                binding.timerProgress.progress = (millisUntilFinished / 100).toInt()
-            }
-            override fun onFinish() {
-                if (isGameActive && correctCount < 4) {
-                    showGameOverDialog("Bạn chưa hoàn thành kịp lúc. Thử lại nhé!", false)
-                }
-            }
-        }.start()
-    }
-
-    private fun setupGame(cards: List<Flashcard>) {
-        val jpCards = cards.shuffled()
-        val viCards = cards.shuffled()
         binding.layoutJapanese.removeAllViews()
         binding.layoutVietnamese.removeAllViews()
-        for (cardData in jpCards) {
-            binding.layoutJapanese.addView(createCard(cardData.word, cardData, true))
-        }
-        for (cardData in viCards) {
-            binding.layoutVietnamese.addView(createCard(cardData.meaning, cardData, false))
-        }
+        updateProgressUI()
+
+        // Lấy tối đa 4 từ từ danh sách còn lại
+        remainingVocabList.shuffle()
+        val roundSize = if (remainingVocabList.size >= 4) 4 else remainingVocabList.size
+        val roundCards = remainingVocabList.take(roundSize)
+
+        // Trộn UI
+        val jpCards = roundCards.shuffled()
+        val viCards = roundCards.shuffled()
+
+        for (data in jpCards) binding.layoutJapanese.addView(createCard(data.word, data, true))
+        for (data in viCards) binding.layoutVietnamese.addView(createCard(data.meaning, data, false))
+
+        startTimer()
     }
 
     private fun createCard(content: String, data: Flashcard, isJp: Boolean): View {
-        val view = layoutInflater.inflate(R.layout.item_matching_card, null)
+        val parent = if (isJp) binding.layoutJapanese else binding.layoutVietnamese
+        val view = layoutInflater.inflate(R.layout.item_matching_card, parent, false)
         val card = view.findViewById<MaterialCardView>(R.id.cardContainer)
-        view.findViewById<MaterialTextView>(R.id.tvContent).text = content
+        card.findViewById<android.widget.TextView>(R.id.tvContent).text = content
+
         card.setOnClickListener { if (isGameActive) handleSelection(card, data, isJp) }
         return view
     }
 
     private fun handleSelection(card: MaterialCardView, data: Flashcard, isJp: Boolean) {
         if (!card.isEnabled) return
+
         if (isJp) {
             resetStyle(selectedJpCard)
             selectedJpCard = card
@@ -175,19 +113,48 @@ class MatchingGameActivity : AppCompatActivity() {
             selectedViCard = card
             selectedViData = data
         }
+
         card.setStrokeColor(Color.parseColor("#6200EE"))
         card.setCardBackgroundColor(Color.parseColor("#F3E5F5"))
-        checkMatch()
-    }
 
-    private fun checkMatch() {
         if (selectedJpData != null && selectedViData != null) {
-            if (selectedJpData!!.id == selectedViData!!.id) handleCorrectMatch()
-            else handleWrongMatch()
+            if (selectedJpData!!.id == selectedViData!!.id) handleCorrect()
+            else handleWrong()
         }
     }
 
-    private fun handleWrongMatch() {
+    private fun handleCorrect() {
+        selectedJpCard?.apply {
+            setCardBackgroundColor(Color.parseColor("#C8E6C9"))
+            setStrokeColor(Color.parseColor("#4CAF50"))
+            isEnabled = false
+        }
+        selectedViCard?.apply {
+            setCardBackgroundColor(Color.parseColor("#C8E6C9"))
+            setStrokeColor(Color.parseColor("#4CAF50"))
+            isEnabled = false
+        }
+
+        remainingVocabList.remove(selectedJpData)
+        correctInRound++
+        totalMatched++
+        updateProgressUI()
+
+        val currentRoundLimit = if (remainingVocabList.size + correctInRound < 4) remainingVocabList.size + correctInRound else 4
+
+        if (correctInRound >= currentRoundLimit) {
+            timer?.cancel()
+            if (remainingVocabList.isEmpty()) {
+                val endMsg = if (!currentLessonId.isNullOrEmpty()) "Bạn đã thuộc toàn bộ bài học!" else "Bạn đã thuộc hết cấp độ $currentLevel!"
+                showGameOverDialog(endMsg, true)
+            } else {
+                Handler(Looper.getMainLooper()).postDelayed({ startNextRound() }, 600)
+            }
+        }
+        clearSelection()
+    }
+
+    private fun handleWrong() {
         val c1 = selectedJpCard
         val c2 = selectedViCard
         c1?.setStrokeColor(Color.RED)
@@ -199,12 +166,40 @@ class MatchingGameActivity : AppCompatActivity() {
         clearSelection()
     }
 
-    private fun resetGame(level: String, lessonId: String?) {
-        correctCount = 0
-        isGameActive = false
+    private fun updateProgressUI() {
+        binding.tvProgressText.text = "Tiến độ: $totalMatched / ${fullVocabList.size}"
+        binding.overallProgress.setProgress(totalMatched, true)
+    }
+
+    private fun startTimer() {
         timer?.cancel()
-        clearSelection()
-        loadData(level, lessonId)
+        timer = object : CountDownTimer(16000, 100) {
+            override fun onTick(millis: Long) {
+                binding.tvTimerText.text = "${millis / 1000}s"
+                binding.timerProgress.progress = (millis / 100).toInt()
+            }
+            override fun onFinish() {
+                if (isGameActive) showGameOverDialog("Hết thời gian! Bạn đã nối được $totalMatched câu.", false)
+            }
+        }.start()
+    }
+
+    private fun showGameOverDialog(msg: String, isWin: Boolean) {
+        isGameActive = false
+        MaterialAlertDialogBuilder(this)
+            .setTitle(if (isWin) "🎉 Hoàn thành!" else "⏰ Kết thúc")
+            .setMessage(msg)
+            .setCancelable(false)
+            .setPositiveButton("Chơi lại bài này") { _, _ -> resetFullGame() }
+            .setNegativeButton("Thoát") { _, _ -> finish() }
+            .show()
+    }
+
+    private fun resetFullGame() {
+        totalMatched = 0
+        remainingVocabList = fullVocabList.toMutableList()
+        updateProgressUI()
+        startNextRound()
     }
 
     private fun clearSelection() {
