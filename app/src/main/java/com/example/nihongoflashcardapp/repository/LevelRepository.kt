@@ -22,6 +22,7 @@ class LevelRepository {
                         id = doc.id, // ⭐ QUAN TRỌNG NHẤT
                         name = doc.getString("name") ?: "",
                         description = doc.getString("description") ?: "",
+                        textBook = doc.getString("textBook") ?: "",
                         order = doc.getLong("order")?.toInt() ?: 0
                     )
                 }
