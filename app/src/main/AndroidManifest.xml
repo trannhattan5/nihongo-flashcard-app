@@ -38,7 +38,10 @@
         <activity
             android:name=".activities.ForgotPasswordActivity"
             android:exported="true">
-
+        </activity>
+        <activity
+            android:name=".activities.MatchingGameActivity"
+            android:exported="true">
         </activity>
         <activity
             android:name=".activities.LoginActivity"

@@ -10,7 +10,8 @@ import com.example.nihongoflashcardapp.repository.LessonProgressRepository
 class LessonAdapter(
     private val lessons: List<Lesson>,
     private val onLearn: (Lesson) -> Unit,
-    private val onReview: (Lesson) -> Unit
+    private val onReview: (Lesson) -> Unit,
+    private val onPlay: (Lesson) -> Unit
 ) : RecyclerView.Adapter<LessonAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemLessonBinding)
@@ -29,6 +30,7 @@ class LessonAdapter(
 
             binding.root.setOnClickListener { onLearn(lesson) }
             binding.btnReview.setOnClickListener { onReview(lesson) }
+            binding.btnStart.setOnClickListener { onPlay(lesson) }
         }
 
 
